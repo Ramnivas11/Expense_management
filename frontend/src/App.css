@@ -1,38 +1,64 @@
+/* General App Styling */
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+  background-color: #f0f2f5;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  padding: 2rem;
+  transition: background-color 0.3s ease;
 }
 
-.App-link {
-  color: #61dafb;
+/* Card and Form Styling */
+.card, .form-control, .btn {
+  border-radius: 0.5rem; /* Softer edges */
+  transition: all 0.3s ease-in-out;
 }
 
-@keyframes App-logo-spin {
+.card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Enhanced hover effect */
+  transform: translateY(-5px);
+}
+
+/* Button Animations */
+.btn {
+  letter-spacing: 0.5px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #004085;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container, .container-fluid {
+    padding: 0 1rem; /* More space on smaller screens */
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-size: 1.5rem; /* Adjust headings for mobile */
+  }
+}
+
+/* Keyframe Animations for transitions */
+@keyframes fadeIn {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
+    transform: translateY(20px);
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0);
   }
+}
+
+.card, .alert {
+  animation: fadeIn 0.5s ease-out;
 }

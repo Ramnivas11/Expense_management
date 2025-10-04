@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/currency")
+@CrossOrigin(origins = "http://localhost:3000")
 public class CountryCurrencyController {
 
     @Autowired
@@ -21,4 +22,3 @@ public class CountryCurrencyController {
         return service.getCurrencyConversion(base);
     }
 }
-

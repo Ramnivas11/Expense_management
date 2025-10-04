@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import ExpenseForm from './components/ExpenseForm';
@@ -7,19 +7,26 @@ import Navigation from './components/Navbar'; // Import Navbar
 import { setAuth } from './services/api';
 
 function App() {
-  const [authUser, setAuthUser] = useState(null);
-  const [role, setRole] = useState(null);
+  const [authUser, setAuthUser] = useState(localStorage.getItem('username'));
+  const [role, setRole] = useState(localStorage.getItem('role'));
 
-  const handleLogin = (username, password, userRole) => {
+  const handleLogin = useCallback((username, password, userRole) => {
+    localStorage.setItem('username', username);
+    localStorage.setItem('password', password);
+    localStorage.setItem('role', userRole);
     setAuth(username, password);
     setAuthUser(username);
     setRole(userRole);
-  };
+  }, []);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem('username');
+    localStorage.removeItem('password');
+    localStorage.removeItem('role');
+    setAuth(null, null);
     setAuthUser(null);
     setRole(null);
-  };
+  }, []);
 
   return (
     <Router>

@@ -1,9 +1,10 @@
 package com.example.expense_management.controller;
 
 import com.example.expense_management.service.OCRService;
-import com.example.expense_management.service.OCRService;
 import net.sourceforge.tess4j.TesseractException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,24 +16,28 @@ import java.io.IOException;
 public class OCRController {
 
     @Autowired
-    private com.example.expense_management.service.OCRService ocrService;
+    private OCRService ocrService;
 
     @PostMapping("/upload")
-    public String uploadReceipt(@RequestParam("file") MultipartFile file) throws IOException, TesseractException {
+    public ResponseEntity<String> uploadReceipt(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
-            return "File is empty!";
+            return new ResponseEntity<>("File is empty!", HttpStatus.BAD_REQUEST);
         }
 
-        // Save temp file
-        File tempFile = File.createTempFile("receipt-", ".png");
-        file.transferTo(tempFile);
+        File tempFile = null;
+        try {
+            tempFile = File.createTempFile("receipt-", ".png");
+            file.transferTo(tempFile);
 
-        // OCR
-        String text = ocrService.extractTextFromImage(tempFile);
-
-        // Delete temp file
-        tempFile.delete();
-
-        return text;
+            String text = ocrService.extractTextFromImage(tempFile);
+            return new ResponseEntity<>(text, HttpStatus.OK);
+        } catch (IOException | TesseractException e) {
+            // Log the exception
+            return new ResponseEntity<>("Error processing file: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+            if (tempFile != null) {
+                tempFile.delete();
+            }
+        }
     }
 }

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "expenses")
+@Table(name = "expense")
 public class Expense {
 
     @Id
@@ -26,6 +26,10 @@ public class Expense {
     private String submittedBy;
 
     private String approvedBy;
+
+    private String comment;
+
+    private String employeeName;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -98,8 +102,23 @@ public class Expense {
         this.approvedBy = approvedBy;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+    }
 }

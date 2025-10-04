@@ -18,7 +18,7 @@ public class ExpenseService {
     }
 
     public Expense submitExpense(Expense expense, String submitterUsername) {
-        expense.setSubmittedBy(submitterUsername);
+        expense.setEmployeeName(submitterUsername);
         expense.setStatus(ExpenseStatus.PENDING);
         return repo.save(expense);
     }
@@ -35,7 +35,8 @@ public class ExpenseService {
     public Expense rejectExpense(Long id, String approverUsername, String comment) {
         Expense e = repo.findById(id).orElseThrow(() -> new IllegalArgumentException("Expense not found: " + id));
         e.setStatus(ExpenseStatus.REJECTED);
-        e.setApprovedBy(approverUsername + (comment != null ? (" - " + comment) : ""));
+        e.setApprovedBy(approverUsername);
+        e.setComment(comment);
         return repo.save(e);
     }
 
@@ -44,10 +45,28 @@ public class ExpenseService {
     }
 
     public List<Expense> getExpensesForUser(String username) {
-        return repo.findBySubmittedBy(username);
+        return repo.findByEmployeeName(username);
     }
 
     public Expense getById(Long id) {
         return repo.findById(id).orElseThrow(() -> new IllegalArgumentException("Expense not found: " + id));
+    }
+
+    public List<Expense> getPendingExpenses() {
+        return repo.findByStatus(ExpenseStatus.PENDING);
+    }
+
+    @Transactional
+    public Expense updateExpense(Long id, Expense expense) {
+        Expense e = repo.findById(id).orElseThrow(() -> new IllegalArgumentException("Expense not found: " + id));
+        e.setDescription(expense.getDescription());
+        e.setAmount(expense.getAmount());
+        e.setCurrency(expense.getCurrency());
+        e.setDateSpent(expense.getDateSpent());
+        return repo.save(e);
+    }
+
+    public void deleteExpense(Long id) {
+        repo.deleteById(id);
     }
 }

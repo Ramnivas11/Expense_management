@@ -1,76 +1,142 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import { Table, Badge, Button, Card, Spinner, Alert } from 'react-bootstrap';
 import API from '../services/api';
+import ApprovalModal from './ApprovalModal';
+
+const statusBadges = {
+  PENDING: 'warning',
+  APPROVED: 'success',
+  REJECTED: 'danger',
+};
 
 function Dashboard({ role }) {
   const [expenses, setExpenses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [modalShow, setModalShow] = useState(false);
+  const [selectedExpense, setSelectedExpense] = useState(null);
+  const [action, setAction] = useState('');
 
-  // Fetch expenses based on role
-  const fetchExpenses = async () => {
+  const fetchExpenses = useCallback(async () => {
+    setLoading(true);
     try {
       const endpoint = role === 'EMPLOYEE' ? '/expenses/me' : '/expenses/pending';
       const res = await API.get(endpoint);
       setExpenses(res.data);
     } catch (err) {
-      console.error(err);
+      setError('Failed to fetch expenses.');
     }
-  };
+    setLoading(false);
+  }, [role]);
 
   useEffect(() => {
     fetchExpenses();
-  }, [role]);
+  }, [fetchExpenses]);
 
-  // Handle Approve/Reject
-  const handleApproval = async (expenseId, action) => {
-    const comment = prompt(`Enter comment for ${action}:`);
-    if (comment === null) return;
-
-    try {
-      await API.post(`/expenses/${expenseId}/${action.toLowerCase()}`, { comment });
-      alert(`Expense ${action}ed successfully!`);
-      fetchExpenses(); // refresh list
-    } catch (err) {
-      alert('Approval failed');
-      console.error(err);
-    }
+  const handleActionClick = (expense, newAction) => {
+    setSelectedExpense(expense);
+    setAction(newAction);
+    setModalShow(true);
   };
 
+  const handleModalSubmit = useCallback(async (comment) => {
+    setModalShow(false);
+    if (!selectedExpense) return;
+
+    try {
+      await API.post(`/expenses/${selectedExpense.id}/${action.toLowerCase()}`, { comment });
+      fetchExpenses(); // Refresh the list
+    } catch (err) {
+      setError(`Failed to ${action.toLowerCase()} expense.`);
+    }
+  }, [selectedExpense, action, fetchExpenses]);
+
+  const renderAdminView = () => (
+    <Card className="shadow-sm">
+      <Card.Header as="h5">Pending Expenses</Card.Header>
+      <Card.Body>
+        {loading && <Spinner animation="border" />}
+        {error && <Alert variant="danger">{error}</Alert>}
+        {!loading && !error && (
+          <Table striped bordered hover responsive>
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {expenses.map((exp) => (
+                <tr key={exp.id}>
+                  <td>{exp.employeeName}</td>
+                  <td>${exp.amount}</td>
+                  <td>{new Date(exp.date).toLocaleDateString()}</td>
+                  <td>{exp.description}</td>
+                  <td>
+                    <Button variant="success" size="sm" className="me-2" onClick={() => handleActionClick(exp, 'APPROVE')}>
+                      Approve
+                    </Button>
+                    <Button variant="danger" size="sm" onClick={() => handleActionClick(exp, 'REJECT')}>
+                      Reject
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
+      </Card.Body>
+    </Card>
+  );
+
+  const renderEmployeeView = () => (
+    <Card className="shadow-sm">
+      <Card.Header as="h5">My Expenses for {expenses.length > 0 && expenses[0].employeeName}</Card.Header>
+      <Card.Body>
+        {loading && <Spinner animation="border" />}
+        {error && <Alert variant="danger">{error}</Alert>}
+        {!loading && !error && (
+          <Table striped bordered hover responsive>
+            <thead>
+              <tr>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {expenses.map((exp) => (
+                <tr key={exp.id}>
+                  <td>${exp.amount}</td>
+                  <td>{new Date(exp.date).toLocaleDateString()}</td>
+                  <td>{exp.description}</td>
+                  <td>
+                    <Badge bg={statusBadges[exp.status]}>{exp.status}</Badge>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
+      </Card.Body>
+    </Card>
+  );
+
   return (
-    <div className="mt-4">
-      <h4>Dashboard ({role})</h4>
-      <table className="table table-bordered">
-        <thead>
-          <tr>
-            <th>Employee</th>
-            <th>Amount</th>
-            <th>Date</th>
-            <th>Description</th>
-            <th>Status</th>
-            {role !== 'EMPLOYEE' && <th>Actions</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {expenses.map(exp => (
-            <tr key={exp.id}>
-              <td>{exp.employeeName}</td>
-              <td>{exp.amount}</td>
-              <td>{exp.date}</td>
-              <td>{exp.description}</td>
-              <td>{exp.status}</td>
-              {role !== 'EMPLOYEE' && (
-                <td>
-                  {exp.status === 'PENDING' && (
-                    <>
-                      <button className="btn btn-success btn-sm me-2" onClick={() => handleApproval(exp.id, 'APPROVE')}>Approve</button>
-                      <button className="btn btn-danger btn-sm" onClick={() => handleApproval(exp.id, 'REJECT')}>Reject</button>
-                    </>
-                  )}
-                  {exp.status !== 'PENDING' && <span>N/A</span>}
-                </td>
-              )}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div>
+      {role === 'EMPLOYEE' ? renderEmployeeView() : renderAdminView()}
+      {selectedExpense && (
+        <ApprovalModal
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+          onSubmit={handleModalSubmit}
+          action={action}
+        />
+      )}
     </div>
   );
 }

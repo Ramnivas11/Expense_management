@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Card, Form, Button, Container, Row, Col, Spinner, Alert } from 'react-bootstrap';
 import API, { setAuth } from '../services/api';
 
@@ -8,7 +8,7 @@ function Login({ onLogin }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleLogin = async (e) => {
+  const handleLogin = useCallback(async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -21,7 +21,7 @@ function Login({ onLogin }) {
       setError('Invalid credentials or server error.');
       setLoading(false);
     }
-  };
+  }, [username, password, onLogin]);
 
   return (
     <Container>
