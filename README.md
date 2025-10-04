@@ -4,6 +4,7 @@ A ** web application** to manage employee expenses efficiently. Streamline **exp
 
 ---
 
+
 ## 🚀 Project Overview
 
 Companies often struggles with manual expense reimbursement processes that are very **time-consuming, error-prone, and lack transparency**.  
@@ -16,6 +17,7 @@ This system allows:
 - Easy integration with **currency conversion APIs**.
 
 ---
+
 
 ## 🎯 Core Features
 
@@ -54,6 +56,7 @@ This system allows:
 
 ---
 
+
 ## 🛠️ Technology Stack
 
 | Layer           | Technology |
@@ -65,6 +68,7 @@ This system allows:
 | APIs            | REST API, Currency Conversion |
 
 ---
+
 
 ## 📁 Project Structure
 
