@@ -1,9 +1,5 @@
 # 💼 Expense Management System
-
 A ** web application** to manage employee expenses efficiently. Streamline **expense submission, approval workflows, and automated receipt processing**. Designed for **hackathons and prototype submissions**, this project demonstrates the **full-stack development with Spring Boot ( backend ) and React ( frontend )**.
-
----
-
 
 ## 🚀 Project Overview
 
