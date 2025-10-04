@@ -17,6 +17,9 @@ function Dashboard({ role }) {
 
   useEffect(() => {
     fetchExpenses();
+    // fetchExpenses is stable in this component scope; depend on role only
+    // to avoid unnecessary re-renders per eslint suggestion
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [role]);
 
   // Handle Approve/Reject
