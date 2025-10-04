@@ -19,7 +19,9 @@ function Dashboard({ role }) {
 
   const fetchExpenses = useCallback(async () => {
     setLoading(true);
+    setError(''); // Reset error on new fetch
     try {
+      // Admins and managers see pending expenses, employees see their own.
       const endpoint = role === 'EMPLOYEE' ? '/expenses/me' : '/expenses/pending';
       const res = await API.get(endpoint);
       setExpenses(res.data);
@@ -94,7 +96,7 @@ function Dashboard({ role }) {
 
   const renderEmployeeView = () => (
     <Card className="shadow-sm">
-      <Card.Header as="h5">My Expenses for {expenses.length > 0 && expenses[0].employeeName}</Card.Header>
+      <Card.Header as="h5">My Expenses for {expenses.length > 0 && expenses[0] && expenses[0].employeeName}</Card.Header>
       <Card.Body>
         {loading && <Spinner animation="border" />}
         {error && <Alert variant="danger">{error}</Alert>}
