@@ -1,15 +1,15 @@
 # 💼 Expense Management System
 
-A ** web application** to manage employee expenses efficiently. Streamline **expense submission, approval workflows, and automated receipt processing**. Designed for **hackathons and prototype submissions**, this project demonstrates **full-stack development with Spring Boot (backend) and React (frontend)**.
+A ** web application** to manage employee expenses efficiently. Streamline **expense submission, approval workflows, and automated receipt processing**. Designed for **hackathons and prototype submissions**, this project demonstrates the **full-stack development with Spring Boot ( backend ) and React ( frontend )**.
 
 ---
 
 ## 🚀 Project Overview
 
-Companies often struggle with manual expense reimbursement processes that are **time-consuming, error-prone, and lack transparency**.  
+Companies often struggles with manual expense reimbursement processes that are very **time-consuming, error-prone, and lack transparency**.  
 This system allows:
 
-- Submission of expenses in multiple currencies.
+- Submission of expenses in multiple currencies .
 - Multi-level approval workflows with **flexible rules**.
 - OCR-based receipt scanning to **auto-generate expenses**.
 - Clear role-based access: **Admin, Manager, Employee**.
@@ -20,7 +20,7 @@ This system allows:
 ## 🎯 Core Features
 
 ### **Authentication & User Management**
-- Auto-create **Company** and **Admin** on first signup.
+- Auto-create **Company** and **Admin** on first signup action.
 - Admin can:
   - Create **Employees & Managers**.
   - Assign and change **roles**.
@@ -36,7 +36,7 @@ This system allows:
 
 ### **Approval Workflow (Manager/Admin Role)**
 - Multi-level approvals (Manager → Finance → Director)
-- Conditional Approval Rules:
+- Conditional Approval  Rules:
   - **Percentage Rule:** e.g., 60% of approvers approve → expense approved.
   - **Specific Approver Rule:** e.g., CFO approves → expense auto-approved.
   - **Hybrid Rule:** Combine both (60% OR CFO approves).
@@ -58,8 +58,8 @@ This system allows:
 
 | Layer           | Technology |
 |-----------------|------------|
-| Frontend        | ReactJS, Axios, Bootstrap |
-| Backend         | Spring Boot, Spring Security, Spring Data JPA |
+| Frontend        | ReactJS , Axios , Bootstrap |
+| Backend         | Spring Boot , Spring Security , Spring Data JPA |
 | Database        | H2 (in-memory for demo) |
 | OCR             | Tesseract OCR |
 | APIs            | REST API, Currency Conversion |
