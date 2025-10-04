@@ -17,6 +17,9 @@ function Dashboard({ role }) {
 
   useEffect(() => {
     fetchExpenses();
+    // fetchExpenses is stable in this component scope; depend on role only
+    // to avoid unnecessary re-renders per eslint suggestion
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [role]);
 
   // Handle Approve/Reject
@@ -49,22 +52,22 @@ function Dashboard({ role }) {
           </tr>
         </thead>
         <tbody>
-          {expenses.map(exp => (
-            <tr key={exp.id}>
-              <td>{exp.employeeName}</td>
-              <td>{exp.amount}</td>
-              <td>{exp.date}</td>
-              <td>{exp.description}</td>
-              <td>{exp.status}</td>
+          {expenses.map(expense => (
+            <tr key={expense.id}>
+              <td>{expense.employeeName}</td>
+              <td>{expense.amount}</td>
+              <td>{expense.date}</td>
+              <td>{expense.description}</td>
+              <td>{expense.status}</td>
               {role !== 'EMPLOYEE' && (
                 <td>
-                  {exp.status === 'PENDING' && (
+                  {expense.status === 'PENDING' && (
                     <>
-                      <button className="btn btn-success btn-sm me-2" onClick={() => handleApproval(exp.id, 'APPROVE')}>Approve</button>
-                      <button className="btn btn-danger btn-sm" onClick={() => handleApproval(exp.id, 'REJECT')}>Reject</button>
+                      <button className="btn btn-success btn-sm me-2" onClick={() => handleApproval(expense.id, 'APPROVE')}>Approve</button>
+                      <button className="btn btn-danger btn-sm" onClick={() => handleApproval(expense.id, 'REJECT')}>Reject</button>
                     </>
                   )}
-                  {exp.status !== 'PENDING' && <span>N/A</span>}
+                  {expense.status !== 'PENDING' && <span>N/A</span>}
                 </td>
               )}
             </tr>

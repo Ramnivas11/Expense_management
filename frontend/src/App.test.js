@@ -1,8 +1,14 @@
 import { render, screen } from '@testing-library/react';
+
+jest.mock('./services/api', () => ({
+  __esModule: true,
+  default: { get: jest.fn(), post: jest.fn() },
+  setAuth: jest.fn(),
+}));
+
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders login heading', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  expect(screen.getByText(/Expense Management/i)).toBeInTheDocument();
 });
