@@ -8,6 +8,11 @@ export const setAuth = (user, pass) => {
   password = pass;
 };
 
+export const clearAuth = () => {
+  username = '';
+  password = '';
+};
+
 const API = axios.create({
   baseURL: 'http://localhost:8080/api',
   withCredentials: true,

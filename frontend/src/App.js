@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Login from './components/Login';
 import ExpenseForm from './components/ExpenseForm';
 import Dashboard from './components/Dashboard';
-import Navigation from './components/Navbar'; // Import Navbar
-import { setAuth } from './services/api';
+import Navigation from './components/Navbar';
+import { setAuth, clearAuth } from './services/api';
 
 function App() {
   const [authUser, setAuthUser] = useState(null);
@@ -17,6 +17,7 @@ function App() {
   };
 
   const handleLogout = () => {
+    clearAuth();
     setAuthUser(null);
     setRole(null);
   };
