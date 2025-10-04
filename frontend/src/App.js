@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import ExpenseForm from './components/ExpenseForm';
 import Dashboard from './components/Dashboard';
+import Navigation from './components/Navbar'; // Import Navbar
 import { setAuth } from './services/api';
 
 function App() {
@@ -14,14 +16,29 @@ function App() {
     setRole(userRole);
   };
 
-  if (!authUser) return <Login onLogin={handleLogin} />;
+  const handleLogout = () => {
+    setAuthUser(null);
+    setRole(null);
+  };
 
   return (
-    <div className="container mt-3">
-      <h2 className="text-center">Expense Management</h2>
-      {role === 'EMPLOYEE' && <ExpenseForm />}
-      <Dashboard role={role} />
-    </div>
+    <Router>
+      {authUser && <Navigation onLogout={handleLogout} />}
+      <div className="container mt-3">
+        <Routes>
+          <Route path="/login" element={!authUser ? <Login onLogin={handleLogin} /> : <Navigate to="/" />} />
+          <Route 
+            path="/" 
+            element={authUser ? (
+              <div>
+                {role === 'EMPLOYEE' && <ExpenseForm />}
+                <Dashboard role={role} />
+              </div>
+            ) : <Navigate to="/login" />}
+          />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

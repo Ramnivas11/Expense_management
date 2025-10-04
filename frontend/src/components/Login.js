@@ -1,32 +1,78 @@
 import React, { useState } from 'react';
+import { Card, Form, Button, Container, Row, Col, Spinner, Alert } from 'react-bootstrap';
 import API, { setAuth } from '../services/api';
 
 function Login({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
     try {
-      // set auth first
       setAuth(username, password);
-
-      // test login and get role
       const res = await API.get('/users/me/role');
       const role = res.data.role;
-
-      onLogin(username, password, role); // pass role to App
+      onLogin(username, password, role);
     } catch (err) {
-      alert('Invalid credentials or server error');
+      setError('Invalid credentials or server error.');
+      setLoading(false);
     }
   };
 
   return (
-    <div className="container mt-5">
-      <h3>Login</h3>
-      <input placeholder="Username" className="form-control mt-2" onChange={e => setUsername(e.target.value)} />
-      <input type="password" placeholder="Password" className="form-control mt-2" onChange={e => setPassword(e.target.value)} />
-      <button className="btn btn-primary mt-3" onClick={handleLogin}>Login</button>
-    </div>
+    <Container>
+      <Row className="justify-content-md-center vh-100 align-items-center">
+        <Col xs={12} md={6} lg={4}>
+          <Card className="shadow-sm">
+            <Card.Body>
+              <h3 className="text-center mb-4">Expense Management</h3>
+              {error && <Alert variant="danger">{error}</Alert>}
+              <Form onSubmit={handleLogin}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Username</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group className="mb-3">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </Form.Group>
+
+                <Button variant="primary" type="submit" className="w-100" disabled={loading}>
+                  {loading ? (
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    'Login'
+                  )}
+                </Button>
+              </Form>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 
